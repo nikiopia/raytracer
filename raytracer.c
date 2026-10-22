@@ -1,6 +1,7 @@
 // ----- INCLUDES ----- //
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 #include "raytracer.h"
 
 int getOffset(uint8_t x, uint8_t y)
@@ -46,17 +47,93 @@ void formatScreen(void)
     displayBuffer[getOffset(SCREEN_COLS + 2, SCREEN_ROWS + 1)] = '\0';
 }
 
+void writePixel(uint8_t x, uint8_t y, uint8_t luminance)
+{
+    if (x < 0 || x >= SCREEN_COLS || y < 0 || y >= SCREEN_ROWS)
+    {
+        printf("writePixel: x,y out of bounds!\n");
+        return;
+    }
+
+    char writeChar;
+
+    switch (luminance)
+    {
+        case 0:
+            writeChar = ' ';
+            break;
+        case 1:
+            writeChar = 'O';
+            break;
+        default:
+            printf("writePixel: undefined luminance\n");
+            writeChar = 'X';
+            break;
+    }
+
+    displayBuffer[getOffset(1 + x, 1 + y)] = writeChar;
+}
+
 void showScreen(void)
 {
     printf("%s\n", displayBuffer);
 }
 
+//------------------------------------------------------------// 
+//                    VECTOR MATH FUNCTIONS                   //
+//------------------------------------------------------------// 
+
+void vec4_scalar(vec4_t v, float scalar)
+{
+    v[0] *= scalar;
+    v[1] *= scalar;
+    v[2] *= scalar;
+    v[3] *= scalar;
+}
+
+void vec4_add(vec4_t a, vec4_t b)
+{
+    a[0] += b[0];
+    a[1] += b[1];
+    a[2] += b[2];
+    a[3] += b[3];
+}
+
+void vec4_sub(vec4_t a, vec4_t b)
+{
+    a[0] -= b[0];
+    a[1] -= b[1];
+    a[2] -= b[2];
+    a[3] -= b[3];
+}
+
+float vec4_dot(vec4_t a, vec4_t b)
+{
+    float dotProduct;
+    dotProduct = a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+    return dotProduct;
+}
+
+float vec4_mag(vec4_t a)
+{
+    float magnitude;
+    magnitude = sqrtf(a[0] * a[0] + a[1] * a[1] + a[2] * a[2] + 
+        a[3] * a[3]);
+    return magnitude;
+}
+
 int main(int argc, char **argv)
 {
+    // Screen setup
     formatScreen();
 
-    printf("'%c'\n", displayBuffer[0]);
-    printf("Test\n");
+    // Render frame
+    for (uint8_t y = 0; y < SCREEN_ROWS; y++)
+    {
+        for (uint8_t x = 0; x < SCREEN_COLS; x++)
+        {
+        }
+    }
     showScreen();
 
     return 0;
